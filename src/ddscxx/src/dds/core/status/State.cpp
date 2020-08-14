@@ -27,7 +27,7 @@ namespace core
 namespace status
 {
 
-SampleRejectedState::SampleRejectedState() : MaskType() { }
+//SampleRejectedState::SampleRejectedState() : MaskType() { }
 
 SampleRejectedState::SampleRejectedState(const SampleRejectedState& src) : MaskType(
     /** @internal @note MSVC bug: Problems constructing a bitset from an unsigned long in the VC RC

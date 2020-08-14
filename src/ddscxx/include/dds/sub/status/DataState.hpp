@@ -90,6 +90,11 @@ public:
      */
     SampleState(const MaskType& src);
 
+    /**
+     *
+     */
+    SampleState& operator=(const SampleState& other) = default;
+
 public:
     /**
      * Get the READ_SAMPLE_STATE.
@@ -179,6 +184,11 @@ public:
      * @param src the MaskType to copy from
      */
     ViewState(const MaskType& src);
+
+    /**
+     *
+     */
+    ViewState& operator=(const ViewState& other) = default;
 
 public:
     /**
@@ -279,6 +289,11 @@ public:
      * @param src the bitset to copy from
      */
     InstanceState(const MaskType& src);
+
+    /**
+     *
+     */
+    InstanceState& operator=(const InstanceState& other) = default;
 
 public:
     /**

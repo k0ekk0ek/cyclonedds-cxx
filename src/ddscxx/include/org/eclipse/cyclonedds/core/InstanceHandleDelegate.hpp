@@ -42,10 +42,11 @@ public:
     InstanceHandleDelegate();
     InstanceHandleDelegate(dds_instance_handle_t h);
     ~InstanceHandleDelegate();
+
 public:
     InstanceHandleDelegate(const dds::core::null_type& src);
     InstanceHandleDelegate(const InstanceHandleDelegate& other);
-
+    InstanceHandleDelegate& operator=(const InstanceHandleDelegate& other) = default;
 
 public:
     bool operator==(const InstanceHandleDelegate& that) const;

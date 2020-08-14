@@ -67,6 +67,12 @@ public:
      */
     SampleRejectedState(const MaskType& src);
 
+    /**
+     * Assignment operator.
+     * @param other SampleRejectedState
+     */
+    SampleRejectedState& operator=(const SampleRejectedState& other) = default;
+
 public:
     /**
      * Get the NOT_REJECTED.
@@ -170,6 +176,11 @@ public:
      * @param other the StatusMask to copy from
      */
     StatusMask(const StatusMask& other);
+
+    /**
+     *
+     */
+    StatusMask& operator=(const StatusMask& other);
 
     /** @cond */
     ~StatusMask();
