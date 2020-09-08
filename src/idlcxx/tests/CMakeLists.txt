@@ -25,6 +25,7 @@ get_target_property(lib CycloneDDS::idl LOCATION)
 get_filename_component(libdir "${lib}" PATH)
 file(TO_NATIVE_PATH "${libdir}" libdir)
 
+get_target_property(CUNIT_IMPORTED_LOCATION CUnit IMPORTED_LOCATION)
 get_filename_component(CUNIT_LIBRARY_DIR "${CUNIT_IMPORTED_LOCATION}" PATH)
 file(TO_NATIVE_PATH "${cunit_libdir}" "${CUNIT_LIBRARY_DIR}")
 
