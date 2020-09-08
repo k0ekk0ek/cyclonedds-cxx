@@ -25,15 +25,17 @@ get_target_property(lib CycloneDDS::idl LOCATION)
 get_filename_component(libdir "${lib}" PATH)
 file(TO_NATIVE_PATH "${libdir}" libdir)
 
+file(TO_NATIVE_PATH "${cunit_libdir}" "${CUNIT_LIBRARY_DIR}")
+
 if(WIN32)
   set(var "PATH")
-  string(REPLACE ";" "\\;" paths "${libdir};$ENV{${var}}")
+  string(REPLACE ";" "\\;" paths "${libdir};${cunit_libdir};$ENV{${var}}")
 elseif(APPLE)
   set(var "DYLD_LIBRARY_PATH")
-  set(paths "${libdir}:$ENV{${var}}")
+  set(paths "${libdir}:${cunit_libdir}:$ENV{${var}}")
 else()
   set(var "LD_LIBRARY_PATH")
-  set(paths "${libdir}:$ENV{${var}}")
+  set(paths "${libdir}:${cunit_libdir}:$ENV{${var}}")
 endif()
 
 
