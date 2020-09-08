@@ -208,7 +208,7 @@ script:
           -DBUILD_TESTING=on
           -G "${GENERATOR}" ..
   - cmake --build . --config ${BUILD_TYPE} --target install -- ${BUILD_TOOL_OPTIONS}
-  - ctest -j 4 --output-on-failure -T test -C ${BUILD_TYPE}
+  - ctest -j 4 --output-on-failure -T test -C ${BUILD_TYPE} -VV
 
 after_success:
   - *submit_to_coverity_scan
