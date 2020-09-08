@@ -18,3 +18,26 @@ set(idlcxx_test_sources
 
 add_cunit_executable(cunit_idlcxx ${idlcxx_test_sources})
 target_link_libraries(cunit_idlcxx PRIVATE idlcxx)
+
+
+# Add location of CycloneDDS::idl to LD_LIBRARY_PATH, DYLD_LIBRARY_PATH, PATH
+get_target_property(lib CycloneDDS::idl LOCATION)
+get_filename_component(libdir "${lib}" PATH)
+file(TO_NATIVE_PATH "${libdir}" libdir)
+
+if(WIN32)
+  set(var "PATH")
+  string(REPLACE ";" "\\;" paths "${libdir};$ENV{${var}}")
+elseif(APPLE)
+  set(var "DYLD_LIBRARY_PATH")
+  set(paths "${libdir}:$ENV{${var}}")
+else()
+  set(var "LD_LIBRARY_PATH")
+  set(paths "${libdir}:$ENV{${var}}")
+endif()
+
+
+get_property(tests DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" PROPERTY TESTS)
+foreach(test ${tests})
+  set_property(TEST ${test} APPEND PROPERTY ENVIRONMENT "${var}=${paths}")
+endforeach()
