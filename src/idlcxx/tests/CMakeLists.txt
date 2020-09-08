@@ -26,10 +26,10 @@ get_filename_component(libdir "${lib}" PATH)
 file(TO_NATIVE_PATH "${libdir}" libdir)
 
 get_target_property(cunit_lib CUnit LOCATION)
-message(STATUS "CUNIT_LOCATION: ${CUNIT_LOCATION}")
-message(STATUS "CUNIT_IMPORTED_LOCATION: ${CUNIT_IMPORTED_LOCATION}")
 get_filename_component(cunit_lib "${cunit_lib}" PATH)
-file(TO_NATIVE_PATH "${CUNIT_LIBRARY_DIR}" cunit_libdir)
+file(TO_NATIVE_PATH "${cunit_libdir}" cunit_libdir)
+message(STATUS "LOCATION: ${cunit_lib}")
+message(STATUS "LOCATION: ${cunit_libdir}")
 
 if(WIN32)
   set(var "PATH")
