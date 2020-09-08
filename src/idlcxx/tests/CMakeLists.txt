@@ -26,7 +26,7 @@ get_filename_component(libdir "${lib}" PATH)
 file(TO_NATIVE_PATH "${libdir}" libdir)
 
 get_target_property(cunit_lib CUnit LOCATION)
-get_filename_component(cunit_lib "${cunit_lib}" PATH)
+get_filename_component(cunit_libdir "${cunit_lib}" PATH)
 file(TO_NATIVE_PATH "${cunit_libdir}" cunit_libdir)
 message(STATUS "LOCATION: ${cunit_lib}")
 message(STATUS "LOCATION: ${cunit_libdir}")
