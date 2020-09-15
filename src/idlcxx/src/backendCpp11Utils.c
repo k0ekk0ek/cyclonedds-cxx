@@ -179,24 +179,13 @@ get_cpp11_templ_type(const idl_node_t *node)
 char *
 get_cpp11_type(const idl_node_t *node)
 {
-  char *cpp11Type = NULL;
-
-  switch (node->mask & IDL_CATEGORY_MASK) {
-  case IDL_BASE_TYPE:
-    cpp11Type = get_cpp11_base_type(node);
-    break;
-  case IDL_TEMPL_TYPE:
-    cpp11Type = get_cpp11_templ_type(node);
-    break;
-  case IDL_CONSTR_TYPE:
-  case IDL_TYPEDEF:
-    cpp11Type = get_cpp11_fully_scoped_name(node);
-    break;
-  default:
-    assert(0);
-    break;
-  }
-  return cpp11Type;
+  assert(node->mask & (IDL_BASE_TYPE|IDL_TEMPL_TYPE|IDL_CONSTR_TYPE|IDL_TYPEDEF));
+  if (idl_is_base_type(node))
+    return get_cpp11_base_type(node);
+  else if (idl_is_templ_type(node))
+    return get_cpp11_templ_type(node);
+  else
+    return get_cpp11_fully_scoped_name(node);
 }
 
 char *
@@ -217,27 +206,28 @@ get_cpp11_fully_scoped_name(const idl_node_t *node)
   current_node = node;
   for (uint32_t i = 0; i < nr_scopes; ++i)
   {
-    scope_type = current_node->mask & (IDL_ENUMERATOR | IDL_ENUM | IDL_STRUCT | IDL_UNION | IDL_TYPEDEF);
+    idl_mask_t mask = IDL_MODULE|IDL_ENUMERATOR|IDL_ENUM|IDL_STRUCT|IDL_UNION|IDL_TYPEDEF;
+    scope_type = (current_node->mask & mask);
     assert(scope_type);
     switch (scope_type)
     {
     case IDL_ENUMERATOR:
-      scope_names[i] = get_cpp11_name(((const idl_enumerator_t *) current_node)->identifier);
+      scope_names[i] = get_cpp11_name(idl_identifier(current_node));
       break;
     case IDL_ENUM:
-      scope_names[i] = get_cpp11_name(((const idl_enum_t *) current_node)->identifier);
+      scope_names[i] = get_cpp11_name(idl_identifier(current_node));
       break;
     case IDL_MODULE:
-      scope_names[i] = get_cpp11_name(((const idl_module_t *) node)->identifier);
+      scope_names[i] = get_cpp11_name(idl_identifier(current_node));
       break;
     case IDL_STRUCT:
-      scope_names[i] = get_cpp11_name(((const idl_struct_t *) node)->identifier);
+      scope_names[i] = get_cpp11_name(idl_identifier(current_node));
       break;
     case IDL_UNION:
-      scope_names[i] = get_cpp11_name(((const idl_union_t *) node)->identifier);
+      scope_names[i] = get_cpp11_name(idl_identifier(current_node));
       break;
     case IDL_TYPEDEF:
-      scope_names[i] = get_cpp11_name(((const idl_typedef_t *) node)->declarators->identifier);
+      scope_names[i] = get_cpp11_name(idl_identifier(((const idl_typedef_t *)current_node)->declarators));
       break;
     }
     scoped_enumerator_len += (strlen(scope_names[i]) + 2); /* scope + "::" */
