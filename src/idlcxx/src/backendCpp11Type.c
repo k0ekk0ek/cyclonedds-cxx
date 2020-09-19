@@ -1379,7 +1379,7 @@ idl_generate_include_statements(idl_backend_ctx ctx, const idl_tree_t *parse_tre
 }
 
 idl_retcode_t
-idl_backendGenerate(idl_backend_ctx ctx, const idl_tree_t *parse_tree)
+idl_backendGenerateType(idl_backend_ctx ctx, const idl_tree_t *parse_tree)
 {
   /* If input comes from a file, generate appropriate include statements. */
   if (parse_tree->files) idl_generate_include_statements(ctx, parse_tree);

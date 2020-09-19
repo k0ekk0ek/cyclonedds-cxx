@@ -252,7 +252,7 @@ idl_walk_tree(
     idl_mask_t mask)
 {
   idl_retcode_t result = IDL_RETCODE_OK;
-  const idl_node_t *sub_nodes;
+  const idl_node_t *sub_node = NULL;
 
   while (target_node && result == IDL_RETCODE_OK) {
     bool matches_target_file;
@@ -266,56 +266,77 @@ idl_walk_tree(
       matches_target_file = true;
     }
 
-    if ((target_node->mask & mask) && matches_target_file)
+    if (matches_target_file)
     {
-      result = action(ctx, target_node);
+      if (target_node->mask & mask)
+      {
+        result = action(ctx, target_node);
+      }
       switch (target_node->mask & IDL_CATEGORY_MASK)
       {
       case IDL_MODULE:
-        sub_nodes = ((const idl_module_t *) target_node)->definitions;
+        sub_node = ((const idl_module_t *) target_node)->definitions;
         break;
       case IDL_STRUCT:
-        sub_nodes = (const idl_node_t *)(((const idl_struct_t *) target_node)->members);
+        sub_node = (const idl_node_t *)((const idl_struct_t *) target_node)->extensibility;
+        if (sub_node && (sub_node->mask & mask)) {
+          result = action(ctx, sub_node);
+        }
+        if (result == IDL_RETCODE_OK) {
+          sub_node = (const idl_node_t *)(((const idl_struct_t *) target_node)->members);
+        }
         break;
       case IDL_UNION:
-        result = action(ctx, ((const idl_union_t *) target_node)->switch_type_spec);
+        sub_node = ((const idl_union_t *) target_node)->switch_type_spec;
+        if (sub_node->mask & mask) {
+          result = action(ctx, sub_node);
+        }
         if (result == IDL_RETCODE_OK) {
-          sub_nodes = (const idl_node_t *)(((const idl_union_t *) target_node)->cases);
-        } else {
-          return result;
+          sub_node = (const idl_node_t *)(((const idl_union_t *) target_node)->cases);
         }
         break;
       case IDL_ENUM:
-        sub_nodes = (const idl_node_t *)(((const idl_enum_t *) target_node)->enumerators);
+        sub_node = (const idl_node_t *)(((const idl_enum_t *) target_node)->enumerators);
         break;
       case IDL_TYPEDEF:
-        sub_nodes = ((const idl_typedef_t *) target_node)->type_spec;
+        sub_node = ((const idl_typedef_t *) target_node)->type_spec;
+        if (sub_node->mask & mask) {
+          result = action(ctx, sub_node);
+        }
+        /* To prevent potential infinite recursion, do not dive into the referred type. */
+        sub_node = NULL;
         break;
       case IDL_CONST:
-        sub_nodes = ((const idl_const_t *) target_node)->type_spec;
+        sub_node = ((const idl_const_t *) target_node)->type_spec;
+        if (sub_node->mask & mask) {
+          result = action(ctx, sub_node);
+        }
+        /* To prevent potential infinite recursion, do not dive into the referred type. */
+        sub_node = NULL;
         break;
       case IDL_MEMBER:
-        result = action(ctx, ((const idl_member_t *) target_node)->type_spec);
+        sub_node = ((const idl_member_t *) target_node)->type_spec;
+        if (sub_node->mask & mask) {
+          result = action(ctx, sub_node);
+        }
         if (result == IDL_RETCODE_OK) {
-          sub_nodes = (const idl_node_t *)(((const idl_member_t *) target_node)->declarators);
-        } else {
-          return result;
+          sub_node = (const idl_node_t *)(((const idl_member_t *) target_node)->declarators);
         }
         break;
       case IDL_CASE:
-        result = action(ctx, ((const idl_case_t *) target_node)->type_spec);
+        sub_node = ((const idl_case_t *) target_node)->type_spec;
+        if (sub_node->mask & mask) {
+          result = action(ctx, sub_node);
+        }
         if (result == IDL_RETCODE_OK) {
-          sub_nodes = (const idl_node_t *)(((const idl_case_t *) target_node)->declarator);
-        } else {
-          return result;
+          sub_node = (const idl_node_t *)(((const idl_case_t *) target_node)->declarator);
         }
         break;
       default:
-        sub_nodes = NULL;
         break;
       }
-      if (sub_nodes) {
-        result = idl_walk_tree(ctx, sub_nodes, action, IDL_MASK_ALL);
+      if (sub_node && result == IDL_RETCODE_OK) {
+        result = idl_walk_tree(ctx, sub_node, action, mask);
       }
     }
 

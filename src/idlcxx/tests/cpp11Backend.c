@@ -240,7 +240,7 @@ test_base_type(const char *input, uint32_t flags, int32_t retcode, const char *o
     return;
   ctx = idl_backend_context_new(2, NULL, NULL);
   CU_ASSERT_PTR_NOT_NULL(ctx);
-  ret = idl_backendGenerate(ctx, tree);
+  ret = idl_backendGenerateType(ctx, tree);
   CU_ASSERT(ret == IDL_RETCODE_OK);
   mem_buf = get_ostream_buffer(idl_get_output_stream(ctx));
   expected_output = (strncmp(mem_buf, output, strlen(output)) == 0);
