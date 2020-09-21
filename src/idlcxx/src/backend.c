@@ -278,7 +278,7 @@ idl_walk_tree(
         sub_node = ((const idl_module_t *) target_node)->definitions;
         break;
       case IDL_STRUCT:
-        sub_node = (const idl_node_t *)((const idl_struct_t *) target_node)->extensibility;
+        sub_node = (const idl_node_t *)((const idl_struct_t *) target_node)->base_type;
         if (sub_node && (sub_node->mask & mask)) {
           result = action(ctx, sub_node);
         }
