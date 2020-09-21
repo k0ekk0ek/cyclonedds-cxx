@@ -1342,22 +1342,16 @@ idl_generate_include_statements(idl_backend_ctx ctx, const idl_tree_t *parse_tre
   idl_include_dep util_depencencies = 0;
 
   /* First determine the list of files included by our IDL file itself. */
-  idl_file_t *tmp, *include_list = idl_get_include_list(ctx, parse_tree);
-  while (include_list) {
-    char *include_file = idl_strdup(include_list->name);
-    size_t i;
-    for (i = strlen(include_file); i > 0 ; --i)
-    {
-      if (include_file[i] == '.') {
-        include_file[i] = '\0';
-        break;
-      }
-    }
-    idl_file_out_printf(ctx, "#include \"%s.hpp\"\n", include_file);
-    free(include_file);
-    tmp = include_list;
-    include_list = tmp->next;
-    free(tmp);
+  idl_include_t *include, *next;
+  include = idl_get_include_list(ctx, parse_tree);
+  for (; include; include = next) {
+    char *file, *dot;
+    file = include->file->name;
+    dot = strrchr(file, '.');
+    if (!include->indirect)
+      idl_file_out_printf(ctx, "#include \"%.*s.hpp\"\n", dot - file, file);
+    next = include->next;
+    free(include);
   }
   idl_file_out_printf(ctx, "\n");
 
