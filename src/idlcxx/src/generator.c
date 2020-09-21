@@ -183,7 +183,6 @@ generate_streamers(
     ret = IDL_RETCODE_CANNOT_OPEN_FILE;
     goto err_write_head_buf;
   }
-  print_footer(hdrfh, inc);
 
 err_write_head_buf:
 err_write_impl_buf:

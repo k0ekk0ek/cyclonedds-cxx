@@ -78,7 +78,7 @@ generate_traits(idl_backend_ctx ctx, const idl_node_t *node)
   idl_indent_decr(ctx);
   idl_file_out_printf(ctx, "}\n");
   idl_indent_decr(ctx);
-  idl_file_out_printf(ctx, "}\n");
+  idl_file_out_printf(ctx, "};\n");
   free(struct_name);
 
   return IDL_RETCODE_OK;

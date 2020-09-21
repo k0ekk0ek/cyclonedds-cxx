@@ -233,6 +233,10 @@ generate_streamer_interfaces(idl_backend_ctx ctx)
   idl_file_out_printf(ctx, "size_t write_struct(void* data, size_t position) const;\n");
   idl_file_out_printf(ctx, "size_t write_size(size_t offset) const;\n");
   idl_file_out_printf(ctx, "size_t read_struct(const void* data, size_t position);\n");
+  idl_file_out_printf(ctx, "size_t key_size(size_t position) const;\n");
+  idl_file_out_printf(ctx, "size_t key_max_size(size_t position) const;\n");
+  idl_file_out_printf(ctx, "size_t key_stream(void* data, size_t position) const;\n");
+  idl_file_out_printf(ctx, "bool key(ddsi_keyhash_t& hash) const;\n");
   idl_indent_decr(ctx);
   return IDL_RETCODE_OK;
 }
@@ -1361,6 +1365,7 @@ idl_generate_include_statements(idl_backend_ctx ctx, const idl_tree_t *parse_tre
   idl_set_custom_context(ctx, &util_depencencies);
   idl_walk_tree(ctx, parse_tree->root, get_util_dependencies, IDL_MASK_ALL);
   idl_reset_custom_context(ctx);
+  idl_file_out_printf(ctx, "#include \"dds/ddsi/ddsi_keyhash.h\"\n");
   if (util_depencencies) {
     if (util_depencencies & idl_vector_dep) {
       idl_file_out_printf(ctx, "#include <vector>\n");
